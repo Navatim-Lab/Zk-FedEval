@@ -1,0 +1,62 @@
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+docs/
+AGENTS.md
+
+# Local datasets and caches
+/data/
+/datasets/
+/.cache/
+/hf_cache/
+
+# Training and simulation outputs
+/runs/
+/outputs/
+/logs/
+/checkpoints/
+*.pt
+*.pth
+*.ckpt
+
+# Flower/Ray local state
+/.flwr/
+/ray_results/
+
+# Future EZKL-generated artifacts
+/ezkl_artifacts/
+/proofs/
+/witnesses/
+/proving_keys/
+/verification_keys/
+/srs/
+/generated_circuits/
+*.srs
+*.wtns
+*.proof
+*.compiled
+
+# Rust/PolkaVM build outputs
+target/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
