@@ -34,6 +34,8 @@ AGENTS.md
 *.pt
 *.pth
 *.ckpt
+*.onnx
+*.npz
 
 # Flower/Ray local state
 /.flwr/

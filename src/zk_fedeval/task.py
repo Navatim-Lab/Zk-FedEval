@@ -1,6 +1,7 @@
 """CNN task and deterministic non-IID CIFAR-100 data for the Flower app."""
 
 import random
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -22,6 +23,9 @@ NUM_CLASSES = 100
 PARTITION_ALPHA = 0.5
 PARTITION_MIN_SIZE = 10
 PARTITION_SEED = 2026
+DEFAULT_EVAL_EXPORT_DIR = Path("outputs/eval")
+ONNX_EXPORT_NAME = "model.onnx"
+EVAL_DATA_EXPORT_NAME = "eval_data.npz"
 
 
 class Net(nn.Module):
@@ -185,11 +189,38 @@ def train(net, trainloader, epochs, lr, device):
     return avg_trainloss
 
 
-def test(net, testloader, device):
-    """Validate the model on the test set."""
+def export_model_onnx(net: Net, export_path: Path) -> None:
+    """Export the evaluated model to ONNX for the Rust/SP1 prover."""
+    export_path.parent.mkdir(parents=True, exist_ok=True)
+    model = net.cpu().eval()
+    dummy_input = torch.randn(1, 3, 32, 32, dtype=torch.float32)
+    torch.onnx.export(
+        model,
+        dummy_input,
+        export_path,
+        input_names=["input"],
+        output_names=["output"],
+        dynamic_axes={"input": {0: "batch"}, "output": {0: "batch"}},
+        opset_version=17,
+        dynamo=False,
+    )
+
+
+def export_eval_data(image_batches: list[torch.Tensor], label_batches: list[torch.Tensor], export_path: Path) -> None:
+    """Export evaluation images and labels for the Rust/SP1 prover."""
+    export_path.parent.mkdir(parents=True, exist_ok=True)
+    images = torch.cat(image_batches, dim=0).numpy()
+    labels = torch.cat(label_batches, dim=0).numpy()
+    np.savez(export_path, images=images, labels=labels)
+
+
+def test(net, testloader, device, export_dir: Path | str | None = None):
+    """Validate the model on the test set and optionally export ONNX + eval data."""
     net.to(device)
     criterion = torch.nn.CrossEntropyLoss()
     correct, loss = 0, 0.0
+    image_batches: list[torch.Tensor] = []
+    label_batches: list[torch.Tensor] = []
     with torch.no_grad():
         for batch in testloader:
             images = batch[IMAGE_COLUMN].to(device)
@@ -197,6 +228,15 @@ def test(net, testloader, device):
             outputs = net(images)
             loss += criterion(outputs, labels).item()
             correct += (torch.max(outputs.data, 1)[1] == labels).sum().item()
+            if export_dir is not None:
+                image_batches.append(images.detach().cpu())
+                label_batches.append(labels.detach().cpu())
     accuracy = correct / len(testloader.dataset)
     loss = loss / len(testloader)
+
+    if export_dir is not None:
+        output_dir = Path(export_dir)
+        export_model_onnx(net, output_dir / ONNX_EXPORT_NAME)
+        export_eval_data(image_batches, label_batches, output_dir / EVAL_DATA_EXPORT_NAME)
+
     return loss, accuracy

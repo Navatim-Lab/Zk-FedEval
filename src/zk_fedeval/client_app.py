@@ -4,7 +4,7 @@ import torch
 from flwr.app import ArrayRecord, Context, Message, MetricRecord, RecordDict
 from flwr.clientapp import ClientApp
 
-from zk_fedeval.task import Net, configure_determinism, load_data
+from zk_fedeval.task import DEFAULT_EVAL_EXPORT_DIR, Net, configure_determinism, load_data
 from zk_fedeval.task import test as test_fn
 from zk_fedeval.task import train as train_fn
 
@@ -84,11 +84,13 @@ def evaluate(msg: Message, context: Context):
         partition_seed,
     )
 
-    # Call the evaluation function
+    # Call the evaluation function and export artifacts for the Rust prover
+    export_dir = DEFAULT_EVAL_EXPORT_DIR / f"partition-{partition_id}"
     eval_loss, eval_acc = test_fn(
         model,
         valloader,
         device,
+        export_dir=export_dir,
     )
 
     # Construct and return reply Message
