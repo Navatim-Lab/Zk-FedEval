@@ -4,6 +4,7 @@
 //! the exact same shape over the guest's stdin/public-values boundary.
 
 use serde::{Deserialize, Serialize};
+use parity_scale_codec::{Decode, Encode};
 
 pub const IMAGE_CHANNELS: usize = 3;
 pub const IMAGE_HEIGHT: usize = 32;
@@ -25,7 +26,7 @@ impl EvalBatch {
 
 /// The public output the guest commits to: how many of the batch's
 /// predictions matched their label.
-#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy, PartialEq, Eq, Encode, Decode)]
 pub struct EvalReport {
     pub num_samples: u32,
     pub correct: u32,

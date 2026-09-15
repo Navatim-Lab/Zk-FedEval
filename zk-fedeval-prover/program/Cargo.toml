@@ -12,6 +12,8 @@ burn-store = { version = "0.21.0", default-features = false, features = [
     "burnpack",
 ] }
 zk-fedeval-common = { path = "../common" }
+sp-crypto-hashing = { version = "0.1.0" }
+parity-scale-codec = "3.7.5"
 
 [build-dependencies]
 burn-import = { version = "0.21.0", features = ["onnx"] }
