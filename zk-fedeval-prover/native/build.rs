@@ -4,7 +4,7 @@ use burn_import::onnx::ModelGen;
 const PARTITION_ID: &str = "partition-0";
 
 fn main() {
-    let onnx_path = format!("../outputs/eval/{PARTITION_ID}/model.onnx");
+    let onnx_path = format!("../../outputs/eval/{PARTITION_ID}/model.onnx");
 
     ModelGen::new()
         .input(&onnx_path)

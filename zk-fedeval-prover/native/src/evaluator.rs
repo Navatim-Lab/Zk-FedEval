@@ -47,7 +47,10 @@ impl<B: Backend> Evaluator<B> {
         let (images, labels) = dataset.to_tensors::<B>(&self.device);
 
         let logits = self.model.predict(images);
-        let predictions = logits.argmax(1).squeeze::<1>();
+        // `squeeze::<1>()` drops *every* size-1 dim, which breaks for a
+        // dataset of exactly 1 sample (both dims are size 1, so it can't
+        // reach 1D). Squeeze only the class axis explicitly instead.
+        let predictions = logits.argmax(1).squeeze_dims::<1>(&[1]);
 
         let correct = predictions
             .equal(labels)

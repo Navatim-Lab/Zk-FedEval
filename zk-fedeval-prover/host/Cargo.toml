@@ -1,0 +1,18 @@
+[package]
+name = "zk-fedeval-host"
+version = "0.1.0"
+edition = "2024"
+build = "build.rs"
+
+[dependencies]
+sp1-sdk = { version = "6.6.0", features = ["blocking"] }
+zk-fedeval-common = { path = "../common" }
+ndarray = "0.17.2"
+ndarray-npy = "0.10.0"
+anyhow = "1"
+hex = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[build-dependencies]
+sp1-build = { version = "6.6.0" }

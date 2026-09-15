@@ -1,0 +1,20 @@
+[package]
+name = "zk-fedeval-program"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[dependencies]
+sp1-zkvm = { version = "6.6.0" }
+burn = { version = "0.21.0", features = ["ndarray"] }
+burn-store = { version = "0.21.0", default-features = false, features = [
+    "std",
+    "burnpack",
+] }
+zk-fedeval-common = { path = "../common" }
+
+[build-dependencies]
+burn-import = { version = "0.21.0", features = ["onnx"] }
+
+[profile.release]
+lto = true
