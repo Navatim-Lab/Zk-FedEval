@@ -53,6 +53,10 @@ AGENTS.md
 *.wtns
 *.proof
 *.compiled
+/zk-fedeval-prover/host/target/
+/zk-fedeval-prover/program/target/
+/zk-fedeval-prover/common/target/
+/zk-fedeval-prover/prover-report.json
 
 # Rust/PolkaVM build outputs
 target/
