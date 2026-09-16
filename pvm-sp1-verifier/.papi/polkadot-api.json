@@ -1,0 +1,12 @@
+{
+  "version": 0,
+  "descriptorPath": ".papi/descriptors",
+  "entries": {
+    "reviveDev": {
+      "wsUrl": "ws://127.0.0.1:9944",
+      "metadata": ".papi/metadata/reviveDev.scale",
+      "genesis": "0x5d2ac78997fdc53a384c8be0e5d9f50f87cd505c810d509792257a95ab0c3ab6",
+      "codeHash": "0xa38dafe1394ce9f41dd18e2f4c85becbf1eaf8cbe3c9cc54703176608eed377d"
+    }
+  }
+}
