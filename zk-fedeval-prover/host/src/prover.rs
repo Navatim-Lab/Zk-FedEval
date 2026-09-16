@@ -47,7 +47,7 @@ impl EvalProver {
         );
         let mut proof = self
             .client
-            .prove(&self.proving_key, stdin)
+            .prove(&self.proving_key, stdin).groth16()
             .run()
             .context("SP1 proving failed")?;
         println!("[prover] proof generated, verifying...");

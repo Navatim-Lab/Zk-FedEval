@@ -5,7 +5,7 @@ edition = "2024"
 build = "build.rs"
 
 [dependencies]
-sp1-sdk = { version = "6.6.0", features = ["blocking"] }
+sp1-sdk = { version = "6.6.0", features = ["blocking","native-gnark"] }
 zk-fedeval-common = { path = "../common" }
 ndarray = "0.17.2"
 ndarray-npy = "0.10.0"

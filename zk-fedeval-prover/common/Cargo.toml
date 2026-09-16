@@ -5,4 +5,4 @@ edition = "2024"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
-parity-scale-codec = "3.7.5"
+parity-scale-codec = { version = "3.7.5", features = ["derive"] }

@@ -37,7 +37,9 @@ pub fn main() {
 
     // commit only the hash of the report and we will store the report data
     let encoded_report = parity_scale_codec::Encode::encode(&report);
-    let report_hash = sp_crypto_hashing::keccak256(&encoded_report);
+    let report_hash = sp_crypto_hashing::keccak_256(&encoded_report);
+
+    println!("public value: {:?}", &report_hash);
     sp1_zkvm::io::commit(&report_hash);
-    
+
 }
