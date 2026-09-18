@@ -6,13 +6,15 @@
     "@types/bun": "latest"
   },
   "scripts": {
-    "start":"bun run main.ts"
+    "start": "bun run main.ts"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "@polkadot-api/descriptors": "file:.papi/descriptors",
-    "polkadot-api": "2.1.0"
+    "@polkadot/keyring": "^14.0.3",
+    "polkadot-api": "2.1.0",
+    "viem": "^2.56.6"
   }
 }

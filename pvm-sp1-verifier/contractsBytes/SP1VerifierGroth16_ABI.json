@@ -1,0 +1,66 @@
+[
+  {
+    "type": "function",
+    "name": "VERSION",
+    "stateMutability": "pure",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "string" }]
+  },
+  {
+    "type": "function",
+    "name": "VERIFIER_HASH",
+    "stateMutability": "pure",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32" }]
+  },
+  {
+    "type": "function",
+    "name": "VK_ROOT",
+    "stateMutability": "pure",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32" }]
+  },
+  {
+    "type": "function",
+    "name": "hashPublicValues",
+    "stateMutability": "pure",
+    "inputs": [
+      { "name": "publicValues", "type": "bytes" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes32" }]
+  },
+  {
+    "type": "function",
+    "name": "verifyProof",
+    "stateMutability": "view",
+    "inputs": [
+      { "name": "programVKey", "type": "bytes32" },
+      { "name": "publicValues", "type": "bytes" },
+      { "name": "proofBytes", "type": "bytes" }
+    ],
+    "outputs": []
+  },
+  {
+    "type": "error",
+    "name": "WrongVerifierSelector",
+    "inputs": [
+      { "name": "received", "type": "bytes4" },
+      { "name": "expected", "type": "bytes4" }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "InvalidExitCode",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidProof",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidVkRoot",
+    "inputs": []
+  }
+]
