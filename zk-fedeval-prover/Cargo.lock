@@ -11382,8 +11382,10 @@ dependencies = [
  "hex",
  "ndarray 0.17.2",
  "ndarray-npy",
+ "parity-scale-codec",
  "serde",
  "serde_json",
+ "sp-crypto-hashing",
  "sp1-build",
  "sp1-sdk",
  "zk-fedeval-common",
@@ -11396,6 +11398,16 @@ dependencies = [
  "burn",
  "burn-import",
  "burn-store",
+ "parity-scale-codec",
+ "sp-crypto-hashing",
+ "sp1-zkvm",
+ "zk-fedeval-common",
+]
+
+[[package]]
+name = "zk-fedeval-program-int8"
+version = "0.1.0"
+dependencies = [
  "parity-scale-codec",
  "sp-crypto-hashing",
  "sp1-zkvm",

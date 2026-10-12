@@ -7,11 +7,17 @@ use ndarray_npy::NpzReader;
 use zk_fedeval_common::EvalBatch;
 
 /// Reads the `.npz` evaluation set exported by the Python client and slices
-/// off the first `batch_size` samples to prove, since proving a full CNN
-/// forward pass inside the zkVM is far more expensive than native execution.
+/// off batches to prove, since proving a full CNN forward pass inside the
+/// zkVM is far more expensive than native execution.
 pub struct EvalDataSource {
     images: Array4<f32>,
     labels: Array1<i64>,
+}
+
+/// A batch for the int8 guest: raw 0-255 pixels (`n * 3072`, CHW) and u8 labels.
+pub struct RawBatch {
+    pub images: Vec<u8>,
+    pub labels: Vec<u8>,
 }
 
 impl EvalDataSource {
@@ -42,13 +48,34 @@ impl EvalDataSource {
         self.labels.len()
     }
 
-    /// Take the first `batch_size` samples as a private witness batch for the guest.
-    pub fn take_batch(&self, batch_size: usize) -> EvalBatch {
-        let n = batch_size.min(self.len());
+    /// Clamp `[start, start + batch_size)` to the available samples.
+    pub fn range(&self, start: usize, batch_size: usize) -> std::ops::Range<usize> {
+        start.min(self.len())..(start + batch_size).min(self.len())
+    }
 
-        let images = self.images.slice(s![0..n, .., .., ..]).iter().copied().collect();
-        let labels = self.labels.slice(s![0..n]).iter().copied().collect();
+    /// Take a slice of samples as a private `f32` witness batch for the Burn guest.
+    pub fn take_batch(&self, start: usize, batch_size: usize) -> EvalBatch {
+        let r = self.range(start, batch_size);
+
+        let images = self.images.slice(s![r.clone(), .., .., ..]).iter().copied().collect();
+        let labels = self.labels.slice(s![r]).iter().copied().collect();
 
         EvalBatch { images, labels }
+    }
+
+    /// Take a slice of samples for the int8 guest, undoing the Python client's
+    /// `Normalize((0.5,) * 3, (0.5,) * 3)`: pixel = round((x + 1) * 127.5).
+    pub fn take_raw_batch(&self, start: usize, batch_size: usize) -> RawBatch {
+        let r = self.range(start, batch_size);
+
+        let images = self
+            .images
+            .slice(s![r.clone(), .., .., ..])
+            .iter()
+            .map(|&x| ((x as f64 + 1.0) * 127.5).round().clamp(0.0, 255.0) as u8)
+            .collect();
+        let labels = self.labels.slice(s![r]).iter().map(|&label| label as u8).collect();
+
+        RawBatch { images, labels }
     }
 }

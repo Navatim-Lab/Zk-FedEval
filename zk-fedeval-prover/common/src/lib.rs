@@ -3,6 +3,8 @@
 //! Keeping these in one crate guarantees both sides serialize/deserialize
 //! the exact same shape over the guest's stdin/public-values boundary.
 
+pub mod int8;
+
 use serde::{Deserialize, Serialize};
 use parity_scale_codec::{Decode, Encode};
 
