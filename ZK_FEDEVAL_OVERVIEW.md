@@ -1,6 +1,6 @@
 # Zk-FedEval: What It Is and How It Works
 
-Oct 9, 2026 · @Nwele Uchenna
+Oct 9, 2026 · @Okeke Francis
 
 ## TL;DR
 
@@ -19,13 +19,13 @@ The pipeline is real, but slow and not yet wired into Flower: the server does no
 
 Federated learning keeps data on clients, so the server can't check any metric a client reports about that data. A client can claim "my update scores 90% on my data" and the server has to take its word for it. That opens the door to poisoned updates, freeloading, and inflated claims wherever rewards depend on contribution.
 
-The goal is to make the evaluation step verifiable: a client publishes a short proof that *this exact model*, run on *its private samples*, got *k of n* predictions right. The proof reveals nothing about the samples. The server, or a contract on chain, accepts or rejects it in milliseconds.
+The goal is to make the evaluation step verifiable: a client publishes a short proof that _this exact model_, run on _its private samples_, got _k of n_ predictions right. The proof reveals nothing about the samples. The server, or a contract on chain, accepts or rejects it in milliseconds.
 
-| Actor | Holds | Does |
-| --- | --- | --- |
-| Server (Flower `ServerApp`) | Global model | Sends the model out, aggregates updates with FedAvg, and should accept only updates with valid proofs |
-| Client (Flower `ClientApp`) | Private train and test data | Trains locally, evaluates, and generates the proof |
-| Verifier contract (PolkaVM) | Program verifying key | Checks the Groth16 proof and the public values on chain |
+| Actor                       | Holds                       | Does                                                                                                  |
+| --------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Server (Flower `ServerApp`) | Global model                | Sends the model out, aggregates updates with FedAvg, and should accept only updates with valid proofs |
+| Client (Flower `ClientApp`) | Private train and test data | Trains locally, evaluates, and generates the proof                                                    |
+| Verifier contract (PolkaVM) | Program verifying key       | Checks the Groth16 proof and the public values on chain                                               |
 
 The original plan (`CURRENT_STATE.md`, dated 2026-08-31) was EZKL/Halo2-KZG circuits. The code has since moved to the SP1 zkVM, which runs ordinary Rust inference instead of a hand-built circuit. Leftovers from the EZKL plan remain: `ezkl` is still in `pyproject.toml`, and the wrapper contract is still named `verifierEZKL.sol`.
 
@@ -37,14 +37,14 @@ The repo holds three code bases joined by files on disk: Python produces the mod
 
 The only thing that crosses from the client's private world into the public one is `prover-report.json`: a verifying key, a Groth16 proof, and a 32-byte hash. The Rust workspace also has a `native` crate that runs the same Burn model outside the zkVM, as a fast sanity check.
 
-| Path | Language | Role |
-| --- | --- | --- |
-| `src/zk_fedeval/` | Python | Flower `ClientApp` and `ServerApp`, the CNN, CIFAR-100 Dirichlet partitions (α = 0.5) |
-| `zk-fedeval-prover/common` | Rust | `EvalBatch` and `EvalReport`, shared by guest and host |
-| `zk-fedeval-prover/program` | Rust (RISC-V guest) | Inference inside SP1 |
-| `zk-fedeval-prover/host` | Rust | Loads data, proves, verifies, writes the report |
-| `zk-fedeval-prover/native` | Rust | Same inference without a proof |
-| `pvm-sp1-verifier/` | TypeScript (Bun) | Submits the proof to the PolkaVM verifier |
+| Path                        | Language            | Role                                                                                  |
+| --------------------------- | ------------------- | ------------------------------------------------------------------------------------- |
+| `src/zk_fedeval/`           | Python              | Flower `ClientApp` and `ServerApp`, the CNN, CIFAR-100 Dirichlet partitions (α = 0.5) |
+| `zk-fedeval-prover/common`  | Rust                | `EvalBatch` and `EvalReport`, shared by guest and host                                |
+| `zk-fedeval-prover/program` | Rust (RISC-V guest) | Inference inside SP1                                                                  |
+| `zk-fedeval-prover/host`    | Rust                | Loads data, proves, verifies, writes the report                                       |
+| `zk-fedeval-prover/native`  | Rust                | Same inference without a proof                                                        |
+| `pvm-sp1-verifier/`         | TypeScript (Bun)    | Submits the proof to the PolkaVM verifier                                             |
 
 ## How the proof works
 

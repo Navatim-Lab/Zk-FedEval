@@ -1,6 +1,6 @@
 # Zk-FedEval: Proving Speedup Plan (Target 5,000 Samples/Min)
 
-Oct 9, 2026 · @Nwele Uchenna
+Oct 9, 2026 · @Okeke Francis
 
 ## Summary
 
@@ -21,17 +21,17 @@ One sample costs \~81.5 M cycles. On an M3 Max even a one-sample proof doesn't f
 
 All figures were measured on 2026-10-09 with SP1 6.6 on a 14-core M3 Max (36 GB), using a stand-in model with the same shape as `Net` and random weights.
 
-| Measurement | Value |
-| --- | --- |
-| `f32` guest, 1 sample | 113.9 M cycles |
-| `f32` guest, 16 samples (the default batch) | 1.336 B cycles |
-| Per sample / fixed per proof | 81.5 M / 32 M cycles |
-| CPU core proof, int8 guest, 1 sample (3.7 M cycles) | 56 s |
-| CPU core proof, int8 guest, 4 samples (12.5 M cycles) | 113 s |
-| Marginal CPU proving rate | \~0.15 M cycles/s |
-| Compressed vs core proof, 1 sample | 56.6 s vs 56.2 s |
-| Peak memory footprint, 4-sample proof | \~46 GB |
-| Default 16-sample `f32` proof on this Mac | Doesn't finish: even 1 sample is killed at a 56.5 GB peak |
+| Measurement                                           | Value                                                     |
+| ----------------------------------------------------- | --------------------------------------------------------- |
+| `f32` guest, 1 sample                                 | 113.9 M cycles                                            |
+| `f32` guest, 16 samples (the default batch)           | 1.336 B cycles                                            |
+| Per sample / fixed per proof                          | 81.5 M / 32 M cycles                                      |
+| CPU core proof, int8 guest, 1 sample (3.7 M cycles)   | 56 s                                                      |
+| CPU core proof, int8 guest, 4 samples (12.5 M cycles) | 113 s                                                     |
+| Marginal CPU proving rate                             | \~0.15 M cycles/s                                         |
+| Compressed vs core proof, 1 sample                    | 56.6 s vs 56.2 s                                          |
+| Peak memory footprint, 4-sample proof                 | \~46 GB                                                   |
+| Default 16-sample `f32` proof on this Mac             | Doesn't finish: even 1 sample is killed at a 56.5 GB peak |
 
 **Floats cost \~120 cycles per multiply-add.** The CNN needs 0.66 M multiply-adds per image, and 81.5 M / 0.66 M ≈ 123 cycles each. The instruction mix (`ADDI`, `AND`, `LUI`, `SLL`, `OR`, `SRL`, compare-and-branch) is the bit-twiddling of software floating point: unpack, align, add, normalize, round. The int8 guest spends \~4.4 cycles per multiply-add.
 
@@ -47,13 +47,13 @@ Not measured yet: the Groth16 wrap (it needs the `native-gnark` build) and any G
 
 Proving cost scales with cycles, and two prototype guests already show a 28× cut with no change to SP1. Both run the same CNN shape (random weights; cycle counts don't depend on weight values) on the SP1 6.6 executor.
 
-| Guest variant | Cycles per sample | Fixed per proof | vs today | Status |
-| --- | --- | --- | --- | --- |
-| `f32`, Burn `ndarray` backend (today) | 81.5 M | 32 M | 1× | Measured |
-| int8, plain Rust loops | 4.30 M | \~0.01 M | 19× | Measured |
-| int8, two channels per 64-bit multiply | 2.92 M | \~0.01 M | 28× | Measured |
-| int8 as implemented: unrolled, register-blocked conv (branch `mac-int8-proving`) | 1.60 M | 0.51 M | 51× | Measured |
-| + Freivalds hint checking | \~0.8 M (revised) | \~0.5 M | \~100× | Estimate |
+| Guest variant                                                                    | Cycles per sample | Fixed per proof | vs today | Status   |
+| -------------------------------------------------------------------------------- | ----------------- | --------------- | -------- | -------- |
+| `f32`, Burn `ndarray` backend (today)                                            | 81.5 M            | 32 M            | 1×       | Measured |
+| int8, plain Rust loops                                                           | 4.30 M            | \~0.01 M        | 19×      | Measured |
+| int8, two channels per 64-bit multiply                                           | 2.92 M            | \~0.01 M        | 28×      | Measured |
+| int8 as implemented: unrolled, register-blocked conv (branch `mac-int8-proving`) | 1.60 M            | 0.51 M          | 51×      | Measured |
+| + Freivalds hint checking                                                        | \~0.8 M (revised) | \~0.5 M         | \~100×   | Estimate |
 
 **1. Quantize to int8 in Python, before proving.** Use per-channel int8 weights, u8 activations after ReLU, i32 accumulators, and a fixed-point rescale between layers. Fold the input normalization into `conv1`'s weights and bias so images enter as raw 0–255 pixels. The quantized model becomes the canonical one that gets proven and registered on chain. Gate it on top-1 agreement with the `f32` model on the client's test split, for example at least 99%.
 
@@ -75,7 +75,7 @@ Once the guest is cheap, throughput comes from GPUs, and from paying the fixed G
 
 **Scale out by running independent chunks.** Proving separate chunks is embarrassingly parallel: one prover process per GPU, each proving its own slice of the minute's samples. That avoids relying on multi-GPU sharding inside one proof.
 
-**Wrap once per minute.** Each chunk ends as a *compressed* proof, which is constant size and has no Groth16 step. An aggregator guest verifies those proofs with `sp1_zkvm::lib::verify::verify_sp1_proof` and sums their reports. Only the aggregator is wrapped in Groth16, so the chain verifies one \~260-byte proof per minute.
+**Wrap once per minute.** Each chunk ends as a _compressed_ proof, which is constant size and has no Groth16 step. An aggregator guest verifies those proofs with `sp1_zkvm::lib::verify::verify_sp1_proof` and sums their reports. Only the aggregator is wrapped in Groth16, so the chain verifies one \~260-byte proof per minute.
 
 **Be careful with the Succinct Prover Network.** `SP1_PROVER=network` sends the witness, meaning the client's private evaluation data, to third-party provers. That defeats the point of the project. Succinct's [Private Proving](https://docs.succinct.xyz/docs/sp1/prover-network/private-proving) runs SP1 inside H200 TEEs (via Phala) so provers can't see inputs. It is in private beta and Enterprise-only, and it adds trust in the TEE hardware. Until then, proving should run on hardware the data owner controls.
 
@@ -83,19 +83,19 @@ Once the guest is cheap, throughput comes from GPUs, and from paying the fixed G
 
 ## Architecture: a pipeline, one proof per minute
 
-The target is throughput, not latency. Samples gathered in minute *t* are proven during minute *t+1*, and the result lands on chain at about *t+2*.
+The target is throughput, not latency. Samples gathered in minute _t_ are proven during minute _t+1_, and the result lands on chain at about _t+2_.
 
 ![Each minute of samples is proven in parallel, then folded into one proof](doc-images/gpu-proving-pipeline.png)
 
 1. **Commit.** Before training, the client publishes a Merkle root over its evaluation set. This also fixes the "data isn't committed" gap.
-2. **Split.** The host cuts the minute's samples into *N* chunks, each sized to finish in under a minute on one GPU.
+2. **Split.** The host cuts the minute's samples into _N_ chunks, each sized to finish in under a minute on one GPU.
 3. **Prove chunks.** Each worker runs the int8 guest and emits a compressed proof. Its public values are the chunk's index range, its Merkle sub-root, the model hash, the sample count, and the correct count.
-4. **Aggregate.** One guest verifies all *N* proofs, checks that the chunks are disjoint and add up to the committed root, sums the counts, and commits `(dataset root, model hash, round, n, correct)`.
+4. **Aggregate.** One guest verifies all _N_ proofs, checks that the chunks are disjoint and add up to the committed root, sums the counts, and commits `(dataset root, model hash, round, n, correct)`.
 5. **Wrap and submit.** One Groth16 proof per minute, checked by `FedEval`.
 
 **If SP1 can't get there: a sumcheck-based zkML prover.** Provers like Lagrange's [DeepProve](https://github.com/Lagrange-Labs/deep-prove) use sumcheck and logup-GKR instead of a general-purpose VM. Its README reports GPT-2 over 512 tokens proven in 7.6 min on a single CPU machine. That is very roughly 100 M+ multiply-adds per second, against our need of 55 M/s (83 × 0.66 M). The catch: its proofs are megabytes (10.7 MiB for that run) and aren't Groth16. Verifying them on PolkaVM would need a new verifier or an SP1 recursion layer. Measured on an M3 Max (2026-10-09): DeepProve's own test proves a same-architecture CIFAR CNN inference in \~1.1 s end to end, \~0.3–0.4 s of it proving, roughly 50–100× faster than SP1 on the same machine. Its license is proprietary and evaluation-only.
 
-**If the target can relax: audit a random subset.** The client commits to all 5,000 samples, but proves only *k* indices drawn from randomness revealed after the commit, such as a later block hash. By Hoeffding's bound at 95% confidence, the measured accuracy is within ±6.1 points for *k* = 500, ±4.3 for 1,000, and ±3.0 for 2,000. That is 2.5–10× less proving, in exchange for a statistical answer rather than an exact one.
+**If the target can relax: audit a random subset.** The client commits to all 5,000 samples, but proves only _k_ indices drawn from randomness revealed after the commit, such as a later block hash. By Hoeffding's bound at 95% confidence, the measured accuracy is within ±6.1 points for _k_ = 500, ±4.3 for 1,000, and ±3.0 for 2,000. That is 2.5–10× less proving, in exchange for a statistical answer rather than an exact one.
 
 ## Throughput math
 
@@ -105,13 +105,13 @@ The int8 guest alone turns an impossible hardware bill (\~1,900 GPUs) into a lar
 \text{GPUs} = \frac{(5000 / 60)\ \text{samples/s} \times \text{cycles per sample}}{\text{cycles/s per GPU}} \times (1 + \text{recursion overhead})
 ```
 
-| Guest | Cycles per sample | Proving rate needed | RTX 5090s at \~3.5 M cycles/s, before recursion overhead |
-| --- | --- | --- | --- |
-| `f32` Burn (today, measured) | 81.5 M | 6.8 G cycles/s | \~1,940 |
-| int8 packed (measured) | 2.92 M | 243 M cycles/s | \~70 |
-| int8 register-blocked (measured) | 1.60 M | 133 M cycles/s | \~38 |
-| + Freivalds hints (estimate) | \~0.8 M | \~67 M cycles/s | \~19 |
-| + Freivalds, audit 1,000 of 5,000 | \~0.8 M on 1 in 5 | \~13 M cycles/s | \~4 |
+| Guest                             | Cycles per sample | Proving rate needed | RTX 5090s at \~3.5 M cycles/s, before recursion overhead |
+| --------------------------------- | ----------------- | ------------------- | -------------------------------------------------------- |
+| `f32` Burn (today, measured)      | 81.5 M            | 6.8 G cycles/s      | \~1,940                                                  |
+| int8 packed (measured)            | 2.92 M            | 243 M cycles/s      | \~70                                                     |
+| int8 register-blocked (measured)  | 1.60 M            | 133 M cycles/s      | \~38                                                     |
+| + Freivalds hints (estimate)      | \~0.8 M           | \~67 M cycles/s     | \~19                                                     |
+| + Freivalds, audit 1,000 of 5,000 | \~0.8 M on 1 in 5 | \~13 M cycles/s     | \~4                                                      |
 
 Fixed costs drop out at this scale. With one Groth16 wrap per minute and the 32 M fixed cycles gone from the int8 guest, per-proof overhead is a few percent of the per-minute work. What's left is recursion: each chunk's compressed proof, plus the aggregator. Phase 0 measures that overhead on GPU.
 
