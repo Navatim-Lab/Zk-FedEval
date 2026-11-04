@@ -18,9 +18,3 @@ Images and labels are supplied as the guest's private evaluation input. The gues
 The current host proves one selected batch using `.groth16()`. It does not aggregate evaluation proofs across clients or rounds, and Flower does not yet use these proofs to gate model updates.
 
 The guest currently commits a report hash while the host reads public values as an `EvalReport`; the reporting interface is inconsistent.
-
-## Open question: N-round evaluation proving
-
-How to make N rounds of evaluation fast to prove remains unresolved. The role, cost, and design of proof aggregation are still under investigation. No multi-round proving strategy has been selected or benchmarked.
-
-See the [main README's open question](../README.md#open-question-proving-n-rounds-of-evaluation) for the project-level problem statement.
