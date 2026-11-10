@@ -1,0 +1,217 @@
+{
+  "timestamp": "2026-11-10T04:51:39.458Z",
+  "node": "ws://127.0.0.1:9944",
+  "weightMarginPercent": "30",
+  "contracts": {
+    "SP1Verifier": {
+      "address": "0x5801b439a678d9d3a68b8019da6a4abfa507de11",
+      "codeHash": "0x91c06b0efd38c33db3555f3257d35476e1b518b8ce18f0b4dd02993d412f61e5",
+      "codeBytes": 144242,
+      "dryRunWeight": {
+        "ref_time": "240859990",
+        "proof_size": "144242"
+      },
+      "submittedWeight": {
+        "ref_time": "313117987",
+        "proof_size": "187514"
+      },
+      "gasConsumed": "15360949",
+      "storageDepositLimit": "754171000000",
+      "uploadTransaction": "0x0f451f13572887b9aab37cc9d16582e2b0fc15f1fe65daaa902761a32d12572a",
+      "deploymentTransaction": "0xc603b9674e764cd542b3924dd948c26dd9de440f47fc0afbc788075963af4113"
+    },
+    "FedEval": {
+      "address": "0x124954f324ab6253b8efc74c3073a7e88338cda5",
+      "codeHash": "0x660dcc430bdee07b97d64731697cdde332dae3c03e37c40f23cbab563b6c42bd",
+      "codeBytes": 5378,
+      "dryRunWeight": {
+        "ref_time": "116011285",
+        "proof_size": "16051"
+      },
+      "submittedWeight": {
+        "ref_time": "150814670",
+        "proof_size": "20866"
+      },
+      "gasConsumed": "6835362",
+      "storageDepositLimit": "340219000000",
+      "uploadTransaction": "0x5e0a18b59076d8c2659bba9e998f9abf543b06c38e5dd41dcbc99c154c3ec7a2",
+      "deploymentTransaction": "0x229552eff80ac4de74c12142ec0a1f78c097dfe3571540e1fd0c0755ea334528",
+      "constructorArgument": "0x5801b439a678d9d3a68b8019da6a4abfa507de11"
+    }
+  },
+  "verification": {
+    "contractAddress": "0x124954f324ab6253b8efc74c3073a7e88338cda5",
+    "transactionHash": "0xddcfa764bd2fc62f61115c7a13dae7ed0401281b939dc31d4cd329965f55601c",
+    "block": {
+      "index": 1,
+      "number": 9,
+      "hash": "0x09c4447eca0844388382a00213426abf4731964b139e120a50c599f73d95cadf"
+    },
+    "dryRun": {
+      "weight": {
+        "ref_time": "35875791676",
+        "proof_size": "342703"
+      },
+      "submittedWeight": {
+        "ref_time": "46638529178",
+        "proof_size": "445513"
+      },
+      "gasConsumed": "1012413"
+    },
+    "execution": {
+      "weight": {
+        "ref_time": "36983346372",
+        "proof_size": "362525"
+      },
+      "actualFee": "141954313311",
+      "tip": "0"
+    },
+    "events": [
+      {
+        "phase": {
+          "type": "ApplyExtrinsic",
+          "value": 1
+        },
+        "event": {
+          "type": "Balances",
+          "value": {
+            "type": "Withdraw",
+            "value": {
+              "who": "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5",
+              "amount": "161563764604"
+            }
+          }
+        },
+        "topics": [],
+        "type": "Balances",
+        "value": {
+          "type": "Withdraw",
+          "value": {
+            "who": "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5",
+            "amount": "161563764604"
+          }
+        }
+      },
+      {
+        "phase": {
+          "type": "ApplyExtrinsic",
+          "value": 1
+        },
+        "event": {
+          "type": "Balances",
+          "value": {
+            "type": "Deposit",
+            "value": {
+              "who": "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5",
+              "amount": "19609451293"
+            }
+          }
+        },
+        "topics": [],
+        "type": "Balances",
+        "value": {
+          "type": "Deposit",
+          "value": {
+            "who": "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5",
+            "amount": "19609451293"
+          }
+        }
+      },
+      {
+        "phase": {
+          "type": "ApplyExtrinsic",
+          "value": 1
+        },
+        "event": {
+          "type": "Balances",
+          "value": {
+            "type": "BurnedDebt",
+            "value": {
+              "amount": "141954313311"
+            }
+          }
+        },
+        "topics": [],
+        "type": "Balances",
+        "value": {
+          "type": "BurnedDebt",
+          "value": {
+            "amount": "141954313311"
+          }
+        }
+      },
+      {
+        "phase": {
+          "type": "ApplyExtrinsic",
+          "value": 1
+        },
+        "event": {
+          "type": "TransactionPayment",
+          "value": {
+            "type": "TransactionFeePaid",
+            "value": {
+              "who": "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5",
+              "actual_fee": "141954313311",
+              "tip": "0"
+            }
+          }
+        },
+        "topics": [],
+        "type": "TransactionPayment",
+        "value": {
+          "type": "TransactionFeePaid",
+          "value": {
+            "who": "15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5",
+            "actual_fee": "141954313311",
+            "tip": "0"
+          }
+        }
+      },
+      {
+        "phase": {
+          "type": "ApplyExtrinsic",
+          "value": 1
+        },
+        "event": {
+          "type": "System",
+          "value": {
+            "type": "ExtrinsicSuccess",
+            "value": {
+              "dispatch_info": {
+                "weight": {
+                  "ref_time": "36983346372",
+                  "proof_size": "362525"
+                },
+                "class": {
+                  "type": "Normal"
+                },
+                "pays_fee": {
+                  "type": "Yes"
+                }
+              }
+            }
+          }
+        },
+        "topics": [],
+        "type": "System",
+        "value": {
+          "type": "ExtrinsicSuccess",
+          "value": {
+            "dispatch_info": {
+              "weight": {
+                "ref_time": "36983346372",
+                "proof_size": "362525"
+              },
+              "class": {
+                "type": "Normal"
+              },
+              "pays_fee": {
+                "type": "Yes"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
