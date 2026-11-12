@@ -1,3 +1,3 @@
 [workspace]
 resolver = "2"
-members = ["common", "native", "program", "host"]
+members = ["common", "native", "program", "program-int8", "host"]

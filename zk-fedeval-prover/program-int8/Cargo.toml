@@ -1,0 +1,14 @@
+[package]
+name = "zk-fedeval-program-int8"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[dependencies]
+sp1-zkvm = { version = "6.6.0" }
+zk-fedeval-common = { path = "../common" }
+sp-crypto-hashing = { version = "0.1.0" }
+parity-scale-codec = "3.7.5"
+
+[profile.release]
+lto = true
